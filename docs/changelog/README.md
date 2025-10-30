@@ -1,5 +1,9 @@
 # Changelog
 
+## dev
+- :star: [UI] - Migrate to Vue 3
+- :star: [UI] - Migrate to Vuetify 3
+
 ## 8.1.1
 - :fire: [TELEGRAM] - Fix markdown character escape
 

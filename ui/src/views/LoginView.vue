@@ -1,18 +1,11 @@
 <template>
   <v-container class="login-background">
-    <v-dialog
-      :value="true"
-      width="400px"
-      :persistent="true"
-      :no-click-animation="true"
-      overlay-color="primary"
-      overlay-opacity="1"
-    >
+    <v-dialog v-model="showDialog" width="400px" persistent no-click-animation>
       <v-card>
         <v-container>
           <v-row justify="center" class="ma-1">
             <v-avatar color="primary" size="80">
-              <v-icon dark x-large>mdi-account</v-icon>
+              <v-icon color="white" size="x-large">mdi-account</v-icon>
             </v-avatar>
           </v-row>
           <v-row>
@@ -26,8 +19,8 @@
                   {{ strategy.name }}
                 </v-tab>
               </v-tabs>
-              <v-tabs-items v-model="strategySelected">
-                <v-tab-item
+              <v-window v-model="strategySelected">
+                <v-window-item
                   v-for="strategy in strategies"
                   :key="strategy.type + strategy.name"
                 >
@@ -40,8 +33,8 @@
                     :name="strategy.name"
                     @authentication-success="onAuthenticationSuccess"
                   />
-                </v-tab-item>
-              </v-tabs-items>
+                </v-window-item>
+              </v-window>
             </v-container>
           </v-row>
         </v-container>
@@ -65,7 +58,8 @@ export default {
     return {
       logo,
       strategies: [],
-      strategySelected: undefined,
+      strategySelected: 0,
+      showDialog: true,
     };
   },
 
@@ -124,11 +118,14 @@ export default {
         });
       }
     } catch (e) {
-      this.$root.$emit(
-        "notify",
-        `Error when trying to get the authentication strategies (${e.message})`,
-        "error",
-      );
+      // Note: In beforeRouteEnter, 'this' is not available, so we'll handle this in the component
+      next((vm) => {
+        vm.$eventBus.emit(
+          "notify",
+          `Error when trying to get the authentication strategies (${e.message})`,
+          "error",
+        );
+      });
     }
   },
 };
